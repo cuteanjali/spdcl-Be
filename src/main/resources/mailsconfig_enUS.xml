@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<LANGUAGE>
+<!-- 	<FROMID>apptacker121@gmail.com</FROMID>
+	<PWD>Apptacker121@</PWD>
+	-->
+	
+	<FROMID>apptacker121@gmail.com</FROMID>
+	<PWD>yerkptxuvttjdcpp</PWD>
+	<HOST>smtp.gmail.com</HOST>
+	<PORT>465</PORT>
+
+	<!-- <PORT>587</PORT> -->
+	<!-- Email #1 -->
+     <EMAILCONTENTS MAILID="SEND_OTP_EMAIL">
+
+	<SUBJECT>User reset password</SUBJECT>
+
+		<BODY>
+			&lt;p&gt;Dear $!do.getApplicantName(),&amp;nbsp;&lt;/p&gt;
+			&lt;p&gt;Your OTP has been generated. Your OTP is 
+			$!do.getOtp() and
+			OTP Valid Time is $!do.getValidTime()
+			 minutes. Please don't share this OTP.&lt;/p&gt;
+
+			&lt;b&gt;
+			Regards,&lt;/b&gt;&lt;br&gt;
+			&lt;b&gt; $!do.getErpName()
+			Team&lt;/b&gt;
+		</BODY>
+
+	</EMAILCONTENTS>
+</LANGUAGE>
+

@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="lt" lang="lt">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Qwitcher+Grypen:wght@700&display=swap" rel="stylesheet">
+    <title>disconnection calculation</title>
+    <meta name="author" content="Knut Norum" />
+    <style type="text/css">
+      * {
+        margin: 0;
+        padding: 0;
+        text-indent: 0;
+      }
+
+      .s1 {
+        color: black;
+        font-family: "Times New Roman", serif;
+        font-style: normal;
+        font-weight: normal;
+        text-decoration: none;
+        font-size: 10pt;
+      }
+
+      h1 {
+        color: black;
+        font-family: Arial, sans-serif;
+        font-style: normal;
+        font-weight: bold;
+        text-decoration: none;
+        font-size: 14pt;
+      }
+
+      p {
+        color: black;
+        font-family: Arial, sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        text-decoration: none;
+        font-size: 8pt;
+        margin: 0pt;
+      }
+
+      .s2 {
+        color: black;
+        font-family: Arial, sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        text-decoration: none;
+        font-size: 8.5pt;
+      }
+
+      h2 {
+        color: black;
+        font-family: Arial, sans-serif;
+        font-style: normal;
+        font-weight: bold;
+        text-decoration: none;
+        font-size: 10pt;
+      }
+
+      .h3 {
+        color: black;
+        font-family: Arial, sans-serif;
+        font-style: normal;
+        font-weight: bold;
+        text-decoration: none;
+        font-size: 9pt;
+      }
+
+      .s3 {
+        color: black;
+        font-family: Arial, sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        text-decoration: none;
+        font-size: 7pt;
+      }
+
+      .s4 {
+        color: black;
+        font-family: Arial, sans-serif;
+        font-style: normal;
+        font-weight: bold;
+        text-decoration: none;
+        font-size: 8.5pt;
+      }
+
+      .s5 {
+        color: black;
+        font-family: Wingdings;
+        font-style: normal;
+        font-weight: normal;
+        text-decoration: none;
+        font-size: 9pt;
+      }
+
+      .s6 {
+        color: black;
+        font-family: Arial, sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        text-decoration: none;
+        font-size: 8.5pt;
+      }
+
+      .s7 {
+        color: black;
+        font-family: Arial, sans-serif;
+        font-style: normal;
+        font-weight: bold;
+        text-decoration: none;
+        font-size: 9pt;
+      }
+
+      .s8 {
+        color: black;
+        font-family: Wingdings;
+        font-style: normal;
+        font-weight: normal;
+        text-decoration: none;
+        font-size: 10pt;
+      }
+
+      .s9 {
+        color: black;
+        font-family: "Times New Roman", serif;
+        font-style: normal;
+        font-weight: normal;
+        text-decoration: none;
+        font-size: 9pt;
+      }
+
+      table,
+      tbody {
+        vertical-align: top;
+        overflow: visible;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="s1" style="margin-left: 300px;">
+      <span>
+        <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td>
+              <img width="75" height="75" src="SBPDCL_logo.gif" />
+            </td>
+                <th style="text-align: center;">
+                <span style="text-align: center;margin: 39px;">
+                <br/>
+                    SOUTH BIHAR POWER DISTRIBUTION COMPANY LTD
+             
+              GOVERNMENT OF BIHAR
+                </span>
+          
+            </th>
+          </tr>
+        </table>
+        <hr style="height:0px;margin-top: 12px;color: black;">
+      </span>
+    </p>
+    <p style="text-indent: 0pt;text-align: left;">
+      <br />
+    </p>
+    <table border="0" cellspacing="0" cellpadding="0"style="width: 100%">
+          <tr>
+          <td>
+          Consumer Name : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${name})]</span>
+          </td>
+          
+           <td style="text-align: right;">
+          Meter No. : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${name})]</span>
+          </td>
+          </tr>
+          <tr>
+            <td style="padding-top: 2pt">
+          Connection Date : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${name})]</span>
+          </td>
+          <td style="text-align: right;padding-top: 2pt">
+            Disconnection Date : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${name})]</span>
+          </td>
+          </tr>
+          
+             <tr>
+            <td style="padding-top: 2pt">
+          Last Bill Date : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${name})]</span>
+          </td>
+          <td style="text-align: right;padding-top: 2pt">
+            Connection Type : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${name})]</span>
+          </td>
+          </tr>
+          
+        </table>
+    
+    
+   
+    <p style="padding-left: 9pt;text-indent: 0pt;text-align: left;"></p>
+    <p class="s2" style="padding-top: 6pt;padding-left: 9pt;text-indent: 0pt;text-align: left;"></p>
+    <p style="text-indent: 0pt;text-align: left;">
+      <br />
+    </p>
+    <h2 style="padding-left: 9pt;text-indent: 0pt;text-align: left;"> <span class="h3">, </span>
+    </h2>
+
+    <p style="padding-left: 9pt;text-indent: 0pt;text-align: left;"></p>
+  </body>
+</html>
