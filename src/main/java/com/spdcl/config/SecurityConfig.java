@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().antMatchers("/v1/login/**","/v1/adminLogin/**","/v1/refreshToken/**","/v1/downloadDisconnection/**")
+		http.csrf().disable().authorizeRequests().antMatchers("/v1/forgotPass/**","/v1/login/**","/v1/refreshToken/**","/v1/saveUser/**","/v1/downloadDisconnection/**")
 
 		.permitAll().anyRequest().authenticated()
 		.and().exceptionHandling().and().sessionManagement()
@@ -69,6 +69,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// Un-secure H2 Database (for testing purposes, H2 console shouldn't be unprotected in production)
 		.and()
 		.ignoring()
-		.antMatchers("/v1/saveTenant/**","/v1/saveUser/**","/images/**", "/v1/login/**");
+		.antMatchers("/v1/saveTenant/**","/images/**", "/v1/login/**");
 	}
 }

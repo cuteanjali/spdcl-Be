@@ -9,10 +9,10 @@ import org.springframework.context.event.EventListener;
 
 
 @SpringBootApplication
-public class InsomniaBackendApplication {
+public class SpdclBackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication springApplication = new SpringApplication(InsomniaBackendApplication.class);
+		SpringApplication springApplication = new SpringApplication(SpdclBackendApplication.class);
 		springApplication.run(args);
 		
 	}

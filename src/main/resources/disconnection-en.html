@@ -167,43 +167,99 @@
     <table border="0" cellspacing="0" cellpadding="0"style="width: 100%">
           <tr>
           <td>
-          Consumer Name : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${name})]</span>
+          Consumer Name : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: normal;">[(${name})]</span>
           </td>
           
            <td style="text-align: right;">
-          Meter No. : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${name})]</span>
+          Meter No. : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${meter})]</span>
           </td>
           </tr>
           <tr>
             <td style="padding-top: 2pt">
-          Connection Date : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${name})]</span>
+          Connection Date : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: normal;">[(${connection})]</span>
           </td>
           <td style="text-align: right;padding-top: 2pt">
-            Disconnection Date : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${name})]</span>
+            Disconnection Date : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: normal;">[(${disconnection})]</span>
           </td>
           </tr>
           
              <tr>
             <td style="padding-top: 2pt">
-          Last Bill Date : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${name})]</span>
+          Last Bill Date : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: normal;">[(${lastBillDate})]</span>
           </td>
           <td style="text-align: right;padding-top: 2pt">
-            Connection Type : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${name})]</span>
+            Connection : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: normal;">[(${connectionType})]</span>
           </td>
           </tr>
           
         </table>
     
-    
-   
+    <br/>
+ 
     <p style="padding-left: 9pt;text-indent: 0pt;text-align: left;"></p>
-    <p class="s2" style="padding-top: 6pt;padding-left: 9pt;text-indent: 0pt;text-align: left;"></p>
-    <p style="text-indent: 0pt;text-align: left;">
-      <br />
-    </p>
-    <h2 style="padding-left: 9pt;text-indent: 0pt;text-align: left;"> <span class="h3">, </span>
-    </h2>
 
-    <p style="padding-left: 9pt;text-indent: 0pt;text-align: left;"></p>
+	<table BORDER="1" CELLPADDING="0" CELLSPACING="0"
+		style="-webkit-print-color-adjust: exact; border-top: 1px SOLID transparent; border-right: 1px SOLID transparent; max-width: 2480px; width: 100%">
+		<tbody style="">
+
+			<tr>
+				<td
+					style="background-color: #314F60; text-align: center; font-weight: bold; color: #000000; font-family: 'Arial'; font-size: 16PX;"
+					colspan="13"><span style="color: white;">SESSION TARIFF [(${load})]</span></td>
+
+			</tr>
+
+
+
+		</tbody>
+	</table>
+
+	<table border ="1" cellpadding="0" cellspacing="0" style="width:100%">
+					
+					
+						<tr  bgcolor="#00erff">
+							<td ><center>Session</center> </td>
+							<td ><center>Fixed Amount</center> </td>
+							<td ><center> Application Amount </center></td>
+							<td><center> Meter Removing Amount </center></td>
+							<td ><center> Disconnection Amount </center></td>
+							
+						</tr>
+							<tr data-iterate="item" th:each="item, iterator : ${listSession}">
+					        <td style="text-align: center;">[(${item.getSession})]</td> 
+					     
+							<td style="text-align: center;">[(${item.getFixedAmnt()})]</td>			
+							<td style="text-align: center;">[(${item.getAppAmnt()})]</td> 
+							<td style="text-align: center;">[(${item.getMeterAmnt()})]</td>	
+							<td style="text-align: center;">[(${item.getDiscAmnt()})]</td>		 							
+						
+						</tr>
+						
+						
+							<tr>
+					        <th style="text-align: center;">Total</th> 
+					     
+							<th style="text-align: center;">[(${totalFixedAmnt})]</th>			
+							<th style="text-align: center;">[(${totalAppAmnt})]</th> 
+							<th style="text-align: center;">[(${totalMeterRemAmnt})]</th>	
+							<th style="text-align: center;">[(${totalDiscAmnt})]</th>		 							
+						
+						</tr>
+					</table>
+					
+	<p class="s2" style="padding-top: 6pt;padding-left: 9pt;text-indent: 0pt;text-align: left;">
+	<h3><u>Fixed Charge Calculation:</u><br/></h3><h3> Note : [(${ruleDisc})]</h3>
+	</p>
+<!--     <p style="text-indent: 2pt;text-align: left;font-size: 17px"> -->
+    	
+<!--    Total Days = [(${noDays})] -->
+<!--     </p> -->
+    <p style="text-indent: 1pt;text-align: left;font-size: 17px"> Fixed Calculation = [(${noDays})] Days <span>&#215;</span> ( [(${totalFixedAmnt})] / 30) <span>&#215;</span> [(${load1})]</p>
+    <p style="text-indent: 1pt;text-align: left;font-size: 17px"> Total Fixed Charge = [(${totalAmt})] Rs.</p>
+    
+     <p style="text-indent: 1pt;text-align: left;font-size: 17px"> <u>Dues Amount = [(${dues})] (Rs.)</u></p>
+      <p style="text-indent: 1pt;text-align: left;font-size: 17px"> Total Final Payable Amount = [(${totalFinalPay})] Rs 
+      <span style="font-weight: bold;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([(${msg})].)</span>
+      </p>
   </body>
 </html>

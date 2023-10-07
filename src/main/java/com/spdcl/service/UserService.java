@@ -18,7 +18,7 @@ public interface UserService {
 	 * @return
 	 * @throws ServiceException
 	 */
-	public Response saveAdminUser(AdminUserModel adminUserModel, String tenantCode) throws ServiceException;
+	public Response saveAdminUser(AdminUserModel adminUserModel) throws ServiceException;
 	
 	/**
 	 * @param adminUserModel

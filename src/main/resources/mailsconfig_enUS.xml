@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <LANGUAGE>
-<!-- 	<FROMID>apptacker121@gmail.com</FROMID>
-	<PWD>Apptacker121@</PWD>
-	-->
-	
+	<!-- <FROMID>spdcl36@gmail.com</FROMID> <PWD>spdcl1992</PWD> -->
+
 	<FROMID>apptacker121@gmail.com</FROMID>
 	<PWD>yerkptxuvttjdcpp</PWD>
 	<HOST>smtp.gmail.com</HOST>
@@ -12,21 +10,60 @@
 
 	<!-- <PORT>587</PORT> -->
 	<!-- Email #1 -->
-     <EMAILCONTENTS MAILID="SEND_OTP_EMAIL">
+<EMAILCONTENTS MAILID="USER_PASSWORD_RESET">
 
-	<SUBJECT>User reset password</SUBJECT>
+		<SUBJECT>Password Reset</SUBJECT>
 
 		<BODY>
-			&lt;p&gt;Dear $!do.getApplicantName(),&amp;nbsp;&lt;/p&gt;
-			&lt;p&gt;Your OTP has been generated. Your OTP is 
-			$!do.getOtp() and
-			OTP Valid Time is $!do.getValidTime()
-			 minutes. Please don't share this OTP.&lt;/p&gt;
+			&lt;p&gt;Dear $!do.getApplicantName(),&amp;nbsp;&lt;/p&gt;&lt;br&gt;
+
+			<!-- do not translate this section -->
+			&lt;p&gt;Congratulation,&lt;/p&gt;
+
+			&lt;p&gt;Your new password is :
+			$!do.getNewPassword(). Please login with this key
+			and change the
+			password by using change password&lt;/p&gt;
+
 
 			&lt;b&gt;
 			Regards,&lt;/b&gt;&lt;br&gt;
 			&lt;b&gt; $!do.getErpName()
 			Team&lt;/b&gt;
+
+
+		</BODY>
+	</EMAILCONTENTS>
+
+	<EMAILCONTENTS MAILID="USER_ID_CREATION">
+
+		<SUBJECT>Login Credential</SUBJECT>
+
+		<BODY>
+			&lt;p&gt;Dear $!do.getUserName(),&amp;nbsp;&lt;/p&gt;<!-- &lt;br&gt; -->
+
+			<!-- do not translate this section -->
+			&lt;p&gt;Greetings from $!do.getErpName() Team.&lt;/p&gt;
+
+			&lt;p&gt;Your login credential has been generated. Your UserName is :
+			$!do.getUserId() and
+			Password is : $!do.getNewPassword(). Please login
+			with this password.&lt;/p&gt;
+
+			<!-- &lt;p&gt;UserId : $!do.getUserName()&lt;/p&gt; &lt;p&gt;Password 
+				: $!do.getUserName()&lt;/p&gt; -->
+
+			&lt;p&gt;For details, kindly login to
+			&lt;a href="$!do.getAppUrl()"
+			target="_blank"&gt;$!do.getErpName()&lt;/a&gt;
+			portal. &lt;/p&gt;
+
+
+			&lt;b&gt;
+			Regards,&lt;/b&gt;&lt;br&gt;
+			&lt;b&gt; $!do.getErpName()
+			Team&lt;/b&gt;
+			
 		</BODY>
 
 	</EMAILCONTENTS>

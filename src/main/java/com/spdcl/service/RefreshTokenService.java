@@ -28,7 +28,7 @@ public class RefreshTokenService {
     
     public RefreshToken createRefreshToken(String username, String tenantCode) {
     	TenantEntity tenantEntity1  = tenantRepository.findByTenantCode(tenantCode);
-        RefreshToken refreshToken = RefreshToken.builder().userEntity(userInfoRepository.findByUserNameAndTenantEntity(username, tenantEntity1).get())
+        RefreshToken refreshToken = RefreshToken.builder().userEntity(userInfoRepository.findByUserNameAndTenantEntity(username, tenantEntity1))
         	.token(UUID.randomUUID().toString())
         	
         	.expiryDate(Instant.now().plusMillis(51600000)).build();

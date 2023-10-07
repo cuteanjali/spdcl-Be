@@ -11,7 +11,49 @@ public class AdminUserResponseModel {
 	private String accessToken;
 	private String token;
 	private String tenantCode;
+	private String firstName;
+	private String lastName;
+	private String status;
+	private UUID roleId;
+	private String role;
+	private String name;
 	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public UUID getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(UUID roleId) {
+		this.roleId = roleId;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 	public String getAccessToken() {
 		return accessToken;
 	}

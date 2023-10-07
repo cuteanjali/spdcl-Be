@@ -1,10 +1,23 @@
-package com.spdcl.email.dto;
+package com.spdcl.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
-public class DisconnectionRequest {
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+@Entity
+@Table(name = "disconnection_table")
+public class DisconnectionEntity  extends BaseEntity{
 
 	private String name;
 	private String meter;
@@ -15,11 +28,15 @@ public class DisconnectionRequest {
 	private double payAmnt;
 	private double duesAmnt;
 	private int noOfDays;
-	private UUID id;
-	private String tenantCode;
-	private String tariffType;
-	private List<String> session;
 	private double securityAmnt;
+	@OneToMany(mappedBy="disconnectionEntity",cascade=CascadeType.ALL, orphanRemoval=true)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	private List<DisconnectionSessionTariffEntity> disconnectionSessionTariffEntities = new ArrayList<DisconnectionSessionTariffEntity>();
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "tenant_id")
+	private TenantEntity tenantEntity;
+
 	
 	public double getSecurityAmnt() {
 		return securityAmnt;
@@ -27,22 +44,6 @@ public class DisconnectionRequest {
 
 	public void setSecurityAmnt(double securityAmnt) {
 		this.securityAmnt = securityAmnt;
-	}
-
-	public String getTariffType() {
-		return tariffType;
-	}
-
-	public void setTariffType(String tariffType) {
-		this.tariffType = tariffType;
-	}
-
-	public String getTenantCode() {
-		return tenantCode;
-	}
-
-	public void setTenantCode(String tenantCode) {
-		this.tenantCode = tenantCode;
 	}
 
 	public String getName() {
@@ -117,24 +118,22 @@ public class DisconnectionRequest {
 		this.noOfDays = noOfDays;
 	}
 
-
-
-	public UUID getId() {
-		return id;
+	public List<DisconnectionSessionTariffEntity> getDisconnectionSessionTariffEntities() {
+		return disconnectionSessionTariffEntities;
 	}
 
-	public void setId(UUID id) {
-		this.id = id;
+	public void setDisconnectionSessionTariffEntities(
+			List<DisconnectionSessionTariffEntity> disconnectionSessionTariffEntities) {
+		this.disconnectionSessionTariffEntities = disconnectionSessionTariffEntities;
 	}
 
-	public List<String> getSession() {
-		return session;
+	public TenantEntity getTenantEntity() {
+		return tenantEntity;
 	}
 
-	public void setSession(List<String> session) {
-		this.session = session;
+	public void setTenantEntity(TenantEntity tenantEntity) {
+		this.tenantEntity = tenantEntity;
 	}
-	
 	
 	
 }

@@ -1,11 +1,19 @@
 package com.spdcl.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +26,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class UserEntity extends BaseEntity{
 	@Column(name = "userName", nullable = false, length = 100)
 	private String userName;
@@ -27,10 +36,12 @@ public class UserEntity extends BaseEntity{
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "tenant_id")
 	private TenantEntity tenantEntity;
-	
-	@Column(name = "status", nullable = true, length = 10)
-	private String status;
 
+	private String firstName;
+	private String lastName;
 	
+	@OneToMany(mappedBy="userEntity",cascade=CascadeType.ALL, orphanRemoval=true)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	private List<RoleAssignEntity> roleAssignEntities = new ArrayList<RoleAssignEntity>();
 	
 }

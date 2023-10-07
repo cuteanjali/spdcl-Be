@@ -14,4 +14,6 @@ public interface SessionTariffRepository extends JpaRepository<SessionTariffEnti
 	List<SessionTariffEntity> findByTenantEntity(TenantEntity tenantEntity);
 
 	List<SessionTariffEntity> findByTenantEntityAndTariffTypeAndSessionIn(TenantEntity tenantEntity, String tariffType, List<String> sessions);
+	
+	
 }
