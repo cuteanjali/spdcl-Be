@@ -13,8 +13,14 @@ public class SessionTariffModel {
 	private String status;
 	private String tenantCode;
 	private String tariffType;
+	private String phaseType;
 	
-	
+	public String getPhaseType() {
+		return phaseType;
+	}
+	public void setPhaseType(String phaseType) {
+		this.phaseType = phaseType;
+	}
 	public double getAppAmnt() {
 		return appAmnt;
 	}

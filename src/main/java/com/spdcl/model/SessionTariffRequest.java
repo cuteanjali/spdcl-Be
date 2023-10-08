@@ -7,6 +7,7 @@ public class SessionTariffRequest {
 	private List<String> sessions;
 	private String tenantCode;
 	private String type;
+	private String phaseType;
 	public List<String> getSessions() {
 		return sessions;
 	}
@@ -24,6 +25,12 @@ public class SessionTariffRequest {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getPhaseType() {
+		return phaseType;
+	}
+	public void setPhaseType(String phaseType) {
+		this.phaseType = phaseType;
 	}
 	
 	

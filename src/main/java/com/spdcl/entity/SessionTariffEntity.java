@@ -16,12 +16,21 @@ public class SessionTariffEntity extends BaseEntity{
 	private double meterRemovingAmnt;
 	private double disconnectionAmnt;
 	private String status;
+	private String phaseType;
 	private String tariffType;
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "tenant_id")
 	private TenantEntity tenantEntity;
 
 	
+	public String getPhaseType() {
+		return phaseType;
+	}
+
+	public void setPhaseType(String phaseType) {
+		this.phaseType = phaseType;
+	}
+
 	public double getAppAmnt() {
 		return appAmnt;
 	}

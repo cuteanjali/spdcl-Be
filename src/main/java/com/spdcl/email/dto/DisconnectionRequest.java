@@ -18,6 +18,7 @@ public class DisconnectionRequest {
 	private UUID id;
 	private String tenantCode;
 	private String tariffType;
+	private String phaseType;
 	private List<String> session;
 	private double securityAmnt;
 	
@@ -133,6 +134,14 @@ public class DisconnectionRequest {
 
 	public void setSession(List<String> session) {
 		this.session = session;
+	}
+
+	public String getPhaseType() {
+		return phaseType;
+	}
+
+	public void setPhaseType(String phaseType) {
+		this.phaseType = phaseType;
 	}
 	
 	

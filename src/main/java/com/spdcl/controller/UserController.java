@@ -308,6 +308,7 @@ public class UserController {
 			tenantEntity2.setStatus(sessionTariffModel.getStatus());
 			tenantEntity2.setTariffValue(sessionTariffModel.getTariffValue());
 			tenantEntity2.setAppAmnt(sessionTariffModel.getAppAmnt());
+			tenantEntity2.setPhaseType(sessionTariffModel.getPhaseType());
 			tenantEntity2.setMeterRemovingAmnt(sessionTariffModel.getMeterRemovingAmnt());
 			tenantEntity2.setDisconnectionAmnt(sessionTariffModel.getDisconnectionAmnt());
 			SessionTariffEntity tenantEntity2q = sessionTariffRepository.save(tenantEntity2);
@@ -316,7 +317,7 @@ public class UserController {
 
 		} else {
 			SessionTariffEntity sessionTariffEntity = new SessionTariffEntity();
-
+			sessionTariffEntity.setPhaseType(sessionTariffModel.getPhaseType());
 			sessionTariffEntity.setAppAmnt(sessionTariffModel.getAppAmnt());
 			sessionTariffEntity.setMeterRemovingAmnt(sessionTariffModel.getMeterRemovingAmnt());
 			sessionTariffEntity.setDisconnectionAmnt(sessionTariffModel.getDisconnectionAmnt());
@@ -351,6 +352,7 @@ public class UserController {
 				sessionTariffModel.setStatus(str.getStatus());
 				sessionTariffModel.setTariffValue(str.getTariffValue());
 				sessionTariffModel.setAppAmnt(str.getAppAmnt());
+				sessionTariffModel.setPhaseType(str.getPhaseType());
 				sessionTariffModel.setDisconnectionAmnt(str.getDisconnectionAmnt());
 				sessionTariffModel.setMeterRemovingAmnt(str.getMeterRemovingAmnt());
 				sessionTariffModel.setTenantCode(str.getTenantEntity().getTenantCode());
@@ -364,15 +366,15 @@ public class UserController {
 	}
 
 	@ApiOperation(value = "validated SessionTariff for application", response = Response.class)
-	@GetMapping(path = "/validateSessionTariff/{tenantCode}/{type}/{session}")
+	@GetMapping(path = "/validateSessionTariff/{tenantCode}/{type}/{phaseType}/{session}")
 	public Response validateSessionTariff(@PathVariable String tenantCode, @PathVariable String type,
-			@PathVariable String session) {
+			@PathVariable String phaseType, @PathVariable String session) {
 		Response response = new Response();
 		TenantEntity tenantEntity1 = tenantRepository.findByTenantCode(tenantCode);
 		List<String> sess = new ArrayList<String>();
 		sess.add(session);
 		List<SessionTariffEntity> tenantEntity2 = sessionTariffRepository
-				.findByTenantEntityAndTariffTypeAndSessionIn(tenantEntity1, type, sess);
+				.findByTenantEntityAndTariffTypeAndPhaseTypeAndSessionIn(tenantEntity1, type, phaseType,sess);
 		if (tenantEntity2 != null && tenantEntity2.size() > 0) {
 			List<DisconnectionSessionTariffEntity> entity = disconnectionSessionTariffRepository
 					.findBySessionTariffEntityIn(tenantEntity2);
@@ -417,12 +419,13 @@ public class UserController {
 		Response response = new Response();
 		TenantEntity tenantEntity1 = tenantRepository.findByTenantCode(request.getTenantCode());
 		List<SessionTariffEntity> tenantEntity2 = sessionTariffRepository
-				.findByTenantEntityAndTariffTypeAndSessionIn(tenantEntity1, request.getType(), request.getSessions());
+				.findByTenantEntityAndTariffTypeAndPhaseTypeAndSessionIn(tenantEntity1, request.getType(),request.getPhaseType(), request.getSessions());
 		List<SessionTariffModel> sessionTariffModels = new ArrayList<SessionTariffModel>();
 		if (tenantEntity2 != null && tenantEntity2.size() > 0) {
 			tenantEntity2.forEach(str -> {
 				SessionTariffModel sessionTariffModel = new SessionTariffModel();
 				sessionTariffModel.setId(str.getId());
+				sessionTariffModel.setPhaseType(str.getPhaseType());
 				sessionTariffModel.setTariffType(str.getTariffType());
 				sessionTariffModel.setSession(str.getSession());
 				sessionTariffModel.setStatus(str.getStatus());
@@ -448,7 +451,7 @@ public class UserController {
 		DisconnectionEntity entity = disconnectionRepository.findById(request.getId()).orElse(null);
 		List<DisconnectionSessionTariffEntity> disconnectionSessionTariffEntities = new ArrayList<DisconnectionSessionTariffEntity>();
 		List<SessionTariffEntity> sessionTariffEntity = sessionTariffRepository
-				.findByTenantEntityAndTariffTypeAndSessionIn(tenantEntity, request.getTariffType(),
+				.findByTenantEntityAndTariffTypeAndPhaseTypeAndSessionIn(tenantEntity, request.getTariffType(),request.getPhaseType(),
 						request.getSession());
 		double totalFixedAmnt = 0;
 		int noticePeriod = 30;
@@ -655,6 +658,58 @@ public class UserController {
 		return response;
 	}
 
+	@ApiOperation(value = "get all Disconnection for application", response = Response.class)
+	@GetMapping(path = "/getSearchDisconnection/{tenantCode}/{key}")
+	public Response getSearchDisconnection(@PathVariable String tenantCode, @PathVariable String key) {
+		Response response = new Response();
+		TenantEntity tenantEntity1 = tenantRepository.findByTenantCode(tenantCode);
+		List<SessionTariffEntity> tenantEntity2 = sessionTariffRepository.findByTenantEntity(tenantEntity1);
+		
+		List<DisconnectionEntity> disconnectionEntities = disconnectionRepository.getAllRecords(key);
+		List<DisconnectionRequestData> sessionTariffModels = new ArrayList<DisconnectionRequestData>();
+
+		if (disconnectionEntities != null && disconnectionEntities.size() > 0) {
+			disconnectionEntities.forEach(str -> {
+				List<String> sessions = new ArrayList<String>();
+				List<String> fixedAmts = new ArrayList<String>();
+				if (str.getTenantEntity().getTenantCode().equals(tenantEntity1.getTenantCode())) {
+
+					DisconnectionRequestData sessionTariffModel = new DisconnectionRequestData();
+					sessionTariffModel.setName(str.getName());
+					sessionTariffModel.setId(str.getId());
+					sessionTariffModel.setMeter(str.getMeter());
+					sessionTariffModel.setDateConnection(str.getDateConnection());
+					sessionTariffModel.setDateDisconnection(str.getDateDisconnection());
+					sessionTariffModel.setDateLastBill(str.getDateLastBill());
+					sessionTariffModel.setLoadBal(str.getLoadBal());
+					sessionTariffModel.setNoOfDays(str.getNoOfDays());
+					sessionTariffModel.setSecurityAmt(str.getSecurityAmnt());
+					sessionTariffModel.setPayAmnt(Math.round(str.getPayAmnt()));
+					sessionTariffModel.setDuesAmnt(str.getDuesAmnt());
+					sessionTariffModel.setTenantCode(str.getTenantEntity().getTenantCode());
+					if (str.getDisconnectionSessionTariffEntities() != null) {
+						str.getDisconnectionSessionTariffEntities().forEach(se -> {
+							sessions.add(se.getSessionTariffEntity().getSession());
+							sessionTariffModel.setTariffType(se.getSessionTariffEntity().getTariffType());
+							sessionTariffModel.setAppAmnt(se.getSessionTariffEntity().getAppAmnt() + "");
+							sessionTariffModel
+									.setMeterRemovingAmnt(se.getSessionTariffEntity().getMeterRemovingAmnt() + "");
+							sessionTariffModel
+									.setDisconnectionAmnt(se.getSessionTariffEntity().getDisconnectionAmnt() + "");
+							fixedAmts.add(se.getSessionTariffEntity().getTariffValue() + "");
+						});
+					}
+					sessionTariffModel.setTariffValue(fixedAmts + "");
+					sessionTariffModel.setSession(sessions);
+					sessionTariffModels.add(sessionTariffModel);
+				}
+			});
+		}
+		response.setData(sessionTariffModels);
+		response.setStatus(ServiceConstants.STATUS_SUCCESS);
+		return response;
+	}
+	
 	@ApiOperation(value = "delete Disconnection for application", response = Response.class)
 	@RequestMapping(path = "/deleteDisconnection/{tenantCode}/{id}", method = RequestMethod.POST)
 	public Response deleteDisconnection(@PathVariable String tenantCode, @PathVariable UUID id) {

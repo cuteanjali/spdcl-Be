@@ -55,10 +55,13 @@ public class DisconnectionService {
 			map.put("name", disconnectionEntity.getName());
 			map.put("meter", disconnectionEntity.getMeter());
 			map.put("disconnection", formatter.format(disconnectionEntity.getDateDisconnection()));
+			
 			map.put("connection", formatter.format(disconnectionEntity.getDateConnection()));
 			map.put("lastBillDate", formatter.format(disconnectionEntity.getDateLastBill()));
 			map.put("connectionType", disconnectionEntity.getDisconnectionSessionTariffEntities().get(0)
 					.getSessionTariffEntity().getTariffType());
+			map.put("phaseType", disconnectionEntity.getDisconnectionSessionTariffEntities().get(0)
+					.getSessionTariffEntity().getPhaseType());
 			map.put("load", "(" + disconnectionEntity.getLoadBal() + "KB" + ")");
 			map.put("load1", disconnectionEntity.getLoadBal());
 			if (disconnectionEntity.getDisconnectionSessionTariffEntities() != null) {
