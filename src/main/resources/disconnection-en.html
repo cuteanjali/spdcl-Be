@@ -1,202 +1,198 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="lt" lang="lt">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link rel="preconnect" href="https://fonts.googleapis.com">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Qwitcher+Grypen:wght@700&display=swap" rel="stylesheet">
-    <title>disconnection calculation</title>
-    <meta name="author" content="Knut Norum" />
-    <style type="text/css">
-      * {
-        margin: 0;
-        padding: 0;
-        text-indent: 0;
-      }
+		<link
+			href="https://fonts.googleapis.com/css2?family=Qwitcher+Grypen:wght@700&display=swap"
+			rel="stylesheet">
+			<title>disconnection calculation</title>
+			<meta name="author" content="Knut Norum" />
+			<style type="text/css">
+* {
+	margin: 0;
+	padding: 0;
+	text-indent: 0;
+}
 
-      .s1 {
-        color: black;
-        font-family: "Times New Roman", serif;
-        font-style: normal;
-        font-weight: normal;
-        text-decoration: none;
-        font-size: 10pt;
-      }
+.s1 {
+	color: black;
+	font-family: "Times New Roman", serif;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+	font-size: 10pt;
+}
 
-      h1 {
-        color: black;
-        font-family: Arial, sans-serif;
-        font-style: normal;
-        font-weight: bold;
-        text-decoration: none;
-        font-size: 14pt;
-      }
+h1 {
+	color: black;
+	font-family: Arial, sans-serif;
+	font-style: normal;
+	font-weight: bold;
+	text-decoration: none;
+	font-size: 14pt;
+}
 
-      p {
-        color: black;
-        font-family: Arial, sans-serif;
-        font-style: normal;
-        font-weight: normal;
-        text-decoration: none;
-        font-size: 8pt;
-        margin: 0pt;
-      }
+p {
+	color: black;
+	font-family: Arial, sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+	font-size: 8pt;
+	margin: 0pt;
+}
 
-      .s2 {
-        color: black;
-        font-family: Arial, sans-serif;
-        font-style: normal;
-        font-weight: normal;
-        text-decoration: none;
-        font-size: 8.5pt;
-      }
+.s2 {
+	color: black;
+	font-family: Arial, sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+	font-size: 8.5pt;
+}
 
-      h2 {
-        color: black;
-        font-family: Arial, sans-serif;
-        font-style: normal;
-        font-weight: bold;
-        text-decoration: none;
-        font-size: 10pt;
-      }
+h2 {
+	color: black;
+	font-family: Arial, sans-serif;
+	font-style: normal;
+	font-weight: bold;
+	text-decoration: none;
+	font-size: 10pt;
+}
 
-      .h3 {
-        color: black;
-        font-family: Arial, sans-serif;
-        font-style: normal;
-        font-weight: bold;
-        text-decoration: none;
-        font-size: 9pt;
-      }
+.h3 {
+	color: black;
+	font-family: Arial, sans-serif;
+	font-style: normal;
+	font-weight: bold;
+	text-decoration: none;
+	font-size: 9pt;
+}
 
-      .s3 {
-        color: black;
-        font-family: Arial, sans-serif;
-        font-style: normal;
-        font-weight: normal;
-        text-decoration: none;
-        font-size: 7pt;
-      }
+.s3 {
+	color: black;
+	font-family: Arial, sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+	font-size: 7pt;
+}
 
-      .s4 {
-        color: black;
-        font-family: Arial, sans-serif;
-        font-style: normal;
-        font-weight: bold;
-        text-decoration: none;
-        font-size: 8.5pt;
-      }
+.s4 {
+	color: black;
+	font-family: Arial, sans-serif;
+	font-style: normal;
+	font-weight: bold;
+	text-decoration: none;
+	font-size: 8.5pt;
+}
 
-      .s5 {
-        color: black;
-        font-family: Wingdings;
-        font-style: normal;
-        font-weight: normal;
-        text-decoration: none;
-        font-size: 9pt;
-      }
+.s5 {
+	color: black;
+	font-family: Wingdings;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+	font-size: 9pt;
+}
 
-      .s6 {
-        color: black;
-        font-family: Arial, sans-serif;
-        font-style: normal;
-        font-weight: normal;
-        text-decoration: none;
-        font-size: 8.5pt;
-      }
+.s6 {
+	color: black;
+	font-family: Arial, sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+	font-size: 8.5pt;
+}
 
-      .s7 {
-        color: black;
-        font-family: Arial, sans-serif;
-        font-style: normal;
-        font-weight: bold;
-        text-decoration: none;
-        font-size: 9pt;
-      }
+.s7 {
+	color: black;
+	font-family: Arial, sans-serif;
+	font-style: normal;
+	font-weight: bold;
+	text-decoration: none;
+	font-size: 9pt;
+}
 
-      .s8 {
-        color: black;
-        font-family: Wingdings;
-        font-style: normal;
-        font-weight: normal;
-        text-decoration: none;
-        font-size: 10pt;
-      }
+.s8 {
+	color: black;
+	font-family: Wingdings;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+	font-size: 10pt;
+}
 
-      .s9 {
-        color: black;
-        font-family: "Times New Roman", serif;
-        font-style: normal;
-        font-weight: normal;
-        text-decoration: none;
-        font-size: 9pt;
-      }
+.s9 {
+	color: black;
+	font-family: "Times New Roman", serif;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+	font-size: 9pt;
+}
 
-      table,
-      tbody {
-        vertical-align: top;
-        overflow: visible;
-      }
-    </style>
-  </head>
-  <body>
-    <p class="s1" style="margin-left: 300px;">
-      <span>
-        <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-            <td>
-              <img width="75" height="75" src="SBPDCL_logo.gif" />
-            </td>
-                <th style="text-align: center;">
-                <span style="text-align: center;margin: 39px;">
-                <br/>
-                    SOUTH BIHAR POWER DISTRIBUTION COMPANY LTD
-             
-              GOVERNMENT OF BIHAR
-                </span>
-          
-            </th>
-          </tr>
-        </table>
-        <hr style="height:0px;margin-top: 12px;color: black;">
-      </span>
-    </p>
-    <p style="text-indent: 0pt;text-align: left;">
-      <br />
-    </p>
-    <table border="0" cellspacing="0" cellpadding="0"style="width: 100%">
-          <tr>
-          <td>
-          Consumer Name : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: normal;">[(${name})]</span>
-          </td>
-          
-           <td style="text-align: right;">
-          Meter No. : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: bold;">[(${meter})]</span>
-          </td>
-          </tr>
-          <tr>
-            <td style="padding-top: 2pt">
-          Connection Date : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: normal;">[(${connection})]</span>
-          </td>
-          <td style="text-align: right;padding-top: 2pt">
-            Disconnection Date : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: normal;">[(${disconnection})]</span>
-          </td>
-          </tr>
-          
-             <tr>
-            <td style="padding-top: 2pt">
-          Last Bill Date : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: normal;">[(${lastBillDate})]</span>
-          </td>
-          <td style="text-align: right;padding-top: 2pt">
-            Connection : <span style="padding-top: 0pt;padding-left: 9pt;text-indent: 0pt;text-align: left;font-weight: normal;">[(${connectionType})] [(${phaseType})]</span>
-          </td>
-          </tr>
-          
-        </table>
-    
-    <br/>
- 
-    <p style="padding-left: 9pt;text-indent: 0pt;text-align: left;"></p>
+table, tbody {
+	vertical-align: top;
+	overflow: visible;
+}
+</style>
+</head>
+<body>
+	<p class="s1" style="margin-left: 300px;">
+		<span>
+			<table border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td><img width="75" height="75" src="SBPDCL_logo.gif" /></td>
+					<th style="text-align: center;"><span
+						style="text-align: center; margin: 39px;"> <br /> SOUTH
+							BIHAR POWER DISTRIBUTION COMPANY LTD GOVERNMENT OF BIHAR
+					</span></th>
+				</tr>
+			</table>
+			<hr style="height: 0px; margin-top: 12px; color: black;">
+		</span>
+	</p>
+	<p style="text-indent: 0pt; text-align: left;">
+		<br />
+	</p>
+	<table border="0" cellspacing="0" cellpadding="0" style="width: 100%">
+		<tr>
+			<td>Consumer Name : <span
+				style="padding-top: 0pt; padding-left: 9pt; text-indent: 0pt; text-align: left; font-weight: normal;">[(${name})]</span>
+			</td>
+
+			<td style="text-align: right;">Meter No. : <span
+				style="padding-top: 0pt; padding-left: 9pt; text-indent: 0pt; text-align: left; font-weight: bold;">[(${meter})]</span>
+			</td>
+		</tr>
+		<tr>
+			<td style="padding-top: 2pt">Connection Date : <span
+				style="padding-top: 0pt; padding-left: 9pt; text-indent: 0pt; text-align: left; font-weight: normal;">[(${connection})]</span>
+			</td>
+			<td style="text-align: right; padding-top: 2pt">Disconnection
+				Date : <span
+				style="padding-top: 0pt; padding-left: 9pt; text-indent: 0pt; text-align: left; font-weight: normal;">[(${disconnection})]</span>
+			</td>
+		</tr>
+
+		<tr>
+			<td style="padding-top: 2pt">Last Bill Date : <span
+				style="padding-top: 0pt; padding-left: 9pt; text-indent: 0pt; text-align: left; font-weight: normal;">[(${lastBillDate})]</span>
+			</td>
+			<td style="text-align: right; padding-top: 2pt">Connection : <span
+				style="padding-top: 0pt; padding-left: 9pt; text-indent: 0pt; text-align: left; font-weight: normal;">[(${connectionType})]
+					[(${phaseType})]</span>
+			</td>
+		</tr>
+
+	</table>
+
+	<br />
+
+	<p style="padding-left: 9pt; text-indent: 0pt; text-align: left;"></p>
 
 	<table BORDER="1" CELLPADDING="0" CELLSPACING="0"
 		style="-webkit-print-color-adjust: exact; border-top: 1px SOLID transparent; border-right: 1px SOLID transparent; max-width: 2480px; width: 100%">
@@ -205,7 +201,8 @@
 			<tr>
 				<td
 					style="background-color: #314F60; text-align: center; font-weight: bold; color: #000000; font-family: 'Arial'; font-size: 16PX;"
-					colspan="13"><span style="color: white;">SESSION TARIFF [(${load})]</span></td>
+					colspan="13"><span style="color: white;">SESSION TARIFF
+						[(${load})]</span></td>
 
 			</tr>
 
@@ -214,52 +211,117 @@
 		</tbody>
 	</table>
 
+	<table border="1" cellpadding="0" cellspacing="0" style="width: 100%">
+
+
+		<tr bgcolor="#00erff">
+			<td><center>Session</center></td>
+			<td><center>Fixed Amount</center></td>
+			<td><center>Application Amount</center></td>
+			<td><center>Meter Removing Amount</center></td>
+			<td><center>Disconnection Amount</center></td>
+
+		</tr>
+		<tr data-iterate="item" th:each="item, iterator : ${listSession}">
+			<td style="text-align: center;">[(${item.getSession})]</td>
+
+			<td style="text-align: center;">[(${item.getFixedAmnt()})]</td>
+			<td style="text-align: center;">[(${item.getAppAmnt()})]</td>
+			<td style="text-align: center;">[(${item.getMeterAmnt()})]</td>
+			<td style="text-align: center;">[(${item.getDiscAmnt()})]</td>
+
+		</tr>
+
+
+		<tr>
+			<th style="text-align: center;">Total</th>
+
+			<th style="text-align: center;">[(${totalFixedAmnt})]</th>
+			<th style="text-align: center;">[(${totalAppAmnt})]</th>
+			<th style="text-align: center;">[(${totalMeterRemAmnt})]</th>
+			<th style="text-align: center;">[(${totalDiscAmnt})]</th>
+
+		</tr>
+	</table>
+	<br />
+	<table BORDER="1" CELLPADDING="0" CELLSPACING="0"
+		style="-webkit-print-color-adjust: exact; border-top: 1px SOLID transparent; border-right: 1px SOLID transparent; max-width: 2480px; width: 100%">
+		<tbody style="">
+			<tr>
+				<td
+					style="background-color: #314F60; text-align: center; font-weight: bold; color: #000000; font-family: 'Arial'; font-size: 16PX;"
+					colspan="13"><span style="color: white;">Applicable
+						Charge Status</span></td>
+			</tr>
+		</tbody>
+	</table>
 	<table border ="1" cellpadding="0" cellspacing="0" style="width:100%">
 					
 					
 						<tr  bgcolor="#00erff">
-							<td ><center>Session</center> </td>
-							<td ><center>Fixed Amount</center> </td>
-							<td ><center> Application Amount </center></td>
-							<td><center> Meter Removing Amount </center></td>
-							<td ><center> Disconnection Amount </center></td>
+							<th ><center>Applicable Charge</center> </th>
+							<th ><center>Applicable Status</center> </th>
+							
 							
 						</tr>
-							<tr data-iterate="item" th:each="item, iterator : ${listSession}">
-					        <td style="text-align: center;">[(${item.getSession})]</td> 
+							<tr data-iterate="item" th:each="item, iterator : ${listApplicable}">
+					        <td style="text-align: center;">[(${item.applicableTariff})]</td> 
 					     
-							<td style="text-align: center;">[(${item.getFixedAmnt()})]</td>			
-							<td style="text-align: center;">[(${item.getAppAmnt()})]</td> 
-							<td style="text-align: center;">[(${item.getMeterAmnt()})]</td>	
-							<td style="text-align: center;">[(${item.getDiscAmnt()})]</td>		 							
+							<td style="text-align: center;">[(${item.checking})]</td>			
+								 							
 						
 						</tr>
-						
-						
-							<tr>
-					        <th style="text-align: center;">Total</th> 
-					     
-							<th style="text-align: center;">[(${totalFixedAmnt})]</th>			
-							<th style="text-align: center;">[(${totalAppAmnt})]</th> 
-							<th style="text-align: center;">[(${totalMeterRemAmnt})]</th>	
-							<th style="text-align: center;">[(${totalDiscAmnt})]</th>		 							
 						
 						</tr>
 					</table>
-					
-	<p class="s2" style="padding-top: 6pt;padding-left: 9pt;text-indent: 0pt;text-align: left;">
-	<h3><u>Fixed Charge Calculation:</u><br/></h3><h3> Note : [(${ruleDisc})]</h3>
+
+	<p class="s2"
+		style="padding-top: 6pt; padding-left: 9pt; text-indent: 0pt; text-align: left;">
+		<h3>
+			<u>Fixed Charge Calculation:</u><br />
+		</h3>
+		<h3>Note : [(${ruleDisc})]</h3>
 	</p>
-<!--     <p style="text-indent: 2pt;text-align: left;font-size: 17px"> -->
-    	
-<!--    Total Days = [(${noDays})] -->
-<!--     </p> -->
-    <p style="text-indent: 1pt;text-align: left;font-size: 17px"> Fixed Calculation = [(${noDays})] Days <span>&#215;</span> ( [(${totalFixedAmnt})] / 30) <span>&#215;</span> [(${load1})]</p>
-    <p style="text-indent: 1pt;text-align: left;font-size: 17px"> Total Fixed Charge = [(${totalAmt})] Rs.</p>
-    
-     <p style="text-indent: 1pt;text-align: left;font-size: 17px"> <u>Dues Amount = [(${dues})] (Rs.)</u></p>
-      <p style="text-indent: 1pt;text-align: left;font-size: 17px"> Total Final Payable Amount = [(${totalFinalPay})] Rs 
-      <span style="font-weight: bold;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([(${msg})].)</span>
-      </p>
-  </body>
+	<!--     <p style="text-indent: 2pt;text-align: left;font-size: 17px"> -->
+
+	<!--    Total Days = [(${noDays})] -->
+	<!--     </p> -->
+	<p style="text-indent: 1pt; text-align: left; font-size: 17px">
+		Fixed Calculation = [(${noDays})] Days <span>&#215;</span> (
+		[(${totalFixedAmnt})] / 30) <span>&#215;</span> [(${load1})]
+	</p>
+	<p style="text-indent: 1pt; text-align: left; font-size: 17px">
+		Total Fixed Charge = [(${totalAmt})] Rs.</p>
+
+	<p style="text-indent: 1pt; text-align: left; font-size: 17px">
+		<u>Dues Amount = [(${dues})] (Rs.)</u>
+	</p>
+	<p style="text-indent: 1pt; text-align: left; font-size: 17px">
+		Total Final Payable Amount = [(${totalFinalPay})] Rs <span
+			style="font-weight: bold;">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([(${msg})].)</span>
+	</p>
+	<p style="text-indent: 1pt; text-align: left; font-size: 17px">
+		<u>Other Charge</u>
+	</p>
+		<table border ="0" cellpadding="1" cellspacing="0" style="width:50%">
+					
+					
+<!-- 						<tr  bgcolor="#00erff"> -->
+<!-- 							<th ><center>Applicable Charge</center> </th> -->
+<!-- 							<th ><center>Applicable Status</center> </th> -->
+							
+							
+<!-- 						</tr> -->
+							<tr data-iterate="item" th:each="item, iterator : ${listApplicable1}">
+					        <td style="text-align: left;">[(${item.applicableTariff})]</td> 
+					     
+							<th style="text-align: left; padding-right: 122px"> = [(${item.checking})] Rs.</th>			
+								 							
+						
+						</tr>
+						
+						
+					</table>
+</body>
 </html>

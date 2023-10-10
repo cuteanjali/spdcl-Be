@@ -11,7 +11,7 @@ public class DisconnectionRequestData {
 	private Date dateConnection;
 	private Date dateDisconnection;
 	private Date dateLastBill;
-	private int loadBal;
+	private float loadBal;
 	private double payAmnt;
 	private double duesAmnt;
 	private int noOfDays;
@@ -19,18 +19,41 @@ public class DisconnectionRequestData {
 	private String tenantCode;
 	private String tariffType;
 	private List<String> session;
-	
+	private String phaseType;
 	private String tariffValue;
 	private String disconnectionAmnt;
 	private String meterRemovingAmnt;
 	private String appAmnt;
 	private double securityAmt;
 	
-	public double getSecurityAmt() {
-		return securityAmt;
+	private boolean disconnectionApplicable;
+	private boolean meterRemovingApplicable;
+	private boolean appApplicable;
+	
+	
+	public boolean isDisconnectionApplicable() {
+		return disconnectionApplicable;
 	}
-	public void setSecurityAmt(double securityAmt) {
-		this.securityAmt = securityAmt;
+	public void setDisconnectionApplicable(boolean disconnectionApplicable) {
+		this.disconnectionApplicable = disconnectionApplicable;
+	}
+	public boolean isMeterRemovingApplicable() {
+		return meterRemovingApplicable;
+	}
+	public void setMeterRemovingApplicable(boolean meterRemovingApplicable) {
+		this.meterRemovingApplicable = meterRemovingApplicable;
+	}
+	public boolean isAppApplicable() {
+		return appApplicable;
+	}
+	public void setAppApplicable(boolean appApplicable) {
+		this.appApplicable = appApplicable;
+	}
+	public String getPhaseType() {
+		return phaseType;
+	}
+	public void setPhaseType(String phaseType) {
+		this.phaseType = phaseType;
 	}
 	public String getName() {
 		return name;
@@ -62,10 +85,10 @@ public class DisconnectionRequestData {
 	public void setDateLastBill(Date dateLastBill) {
 		this.dateLastBill = dateLastBill;
 	}
-	public int getLoadBal() {
+	public float getLoadBal() {
 		return loadBal;
 	}
-	public void setLoadBal(int loadBal) {
+	public void setLoadBal(float loadBal) {
 		this.loadBal = loadBal;
 	}
 	public double getPayAmnt() {
@@ -134,6 +157,13 @@ public class DisconnectionRequestData {
 	public void setAppAmnt(String appAmnt) {
 		this.appAmnt = appAmnt;
 	}
+	public double getSecurityAmt() {
+		return securityAmt;
+	}
+	public void setSecurityAmt(double securityAmt) {
+		this.securityAmt = securityAmt;
+	}
+	
 	
 	
 }

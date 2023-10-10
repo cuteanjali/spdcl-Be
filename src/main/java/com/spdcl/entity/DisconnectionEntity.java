@@ -24,7 +24,7 @@ public class DisconnectionEntity  extends BaseEntity{
 	private Date dateConnection;
 	private Date dateDisconnection;
 	private Date dateLastBill;
-	private int loadBal;
+	private float loadBal;
 	private double payAmnt;
 	private double duesAmnt;
 	private int noOfDays;
@@ -37,13 +37,33 @@ public class DisconnectionEntity  extends BaseEntity{
 	@JoinColumn(name = "tenant_id")
 	private TenantEntity tenantEntity;
 
+	private boolean disconnectionApplicable;
+	private boolean meterRemovingApplicable;
+	private boolean appApplicable;
 	
-	public double getSecurityAmnt() {
-		return securityAmnt;
+	
+	public boolean isDisconnectionApplicable() {
+		return disconnectionApplicable;
 	}
 
-	public void setSecurityAmnt(double securityAmnt) {
-		this.securityAmnt = securityAmnt;
+	public void setDisconnectionApplicable(boolean disconnectionApplicable) {
+		this.disconnectionApplicable = disconnectionApplicable;
+	}
+
+	public boolean isMeterRemovingApplicable() {
+		return meterRemovingApplicable;
+	}
+
+	public void setMeterRemovingApplicable(boolean meterRemovingApplicable) {
+		this.meterRemovingApplicable = meterRemovingApplicable;
+	}
+
+	public boolean isAppApplicable() {
+		return appApplicable;
+	}
+
+	public void setAppApplicable(boolean appApplicable) {
+		this.appApplicable = appApplicable;
 	}
 
 	public String getName() {
@@ -86,11 +106,11 @@ public class DisconnectionEntity  extends BaseEntity{
 		this.dateLastBill = dateLastBill;
 	}
 
-	public int getLoadBal() {
+	public float getLoadBal() {
 		return loadBal;
 	}
 
-	public void setLoadBal(int loadBal) {
+	public void setLoadBal(float loadBal) {
 		this.loadBal = loadBal;
 	}
 
@@ -118,6 +138,14 @@ public class DisconnectionEntity  extends BaseEntity{
 		this.noOfDays = noOfDays;
 	}
 
+	public double getSecurityAmnt() {
+		return securityAmnt;
+	}
+
+	public void setSecurityAmnt(double securityAmnt) {
+		this.securityAmnt = securityAmnt;
+	}
+
 	public List<DisconnectionSessionTariffEntity> getDisconnectionSessionTariffEntities() {
 		return disconnectionSessionTariffEntities;
 	}
@@ -134,6 +162,7 @@ public class DisconnectionEntity  extends BaseEntity{
 	public void setTenantEntity(TenantEntity tenantEntity) {
 		this.tenantEntity = tenantEntity;
 	}
+
 	
 	
 }

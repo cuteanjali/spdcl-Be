@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -461,6 +462,11 @@ public class UserController {
 		String ruleDisc = null;
 		double totalAmt = 0;
 		double totalFinalPay = 0;
+		
+		double applicationPay = 0;
+		double disconnectionPay = 0;
+		double meterRemovingPay = 0;
+		
 		if (request.getId() != null && entity != null) {
 
 			entity.setModifiedDate(new Date());
@@ -475,6 +481,9 @@ public class UserController {
 			entity.setSecurityAmnt(request.getSecurityAmnt());
 			entity.setDuesAmnt(request.getDuesAmnt());
 			entity.setNoOfDays(request.getNoOfDays());
+			entity.setAppApplicable(request.isAppApplicable());
+			entity.setDisconnectionApplicable(request.isDisconnectionApplicable());
+			entity.setMeterRemovingApplicable(request.isMeterRemovingApplicable());
 			if (entity.getDisconnectionSessionTariffEntities() != null
 					&& entity.getDisconnectionSessionTariffEntities().size() > 0) {
 				disconnectionSessionTariffRepository.deleteAll(entity.getDisconnectionSessionTariffEntities());
@@ -488,10 +497,26 @@ public class UserController {
 					entity1.setModifiedDate(new Date());
 					entity1.setSessionTariffEntity(sessionTariffEntity2);
 					disconnectionSessionTariffEntities.add(entity1);
+					totalFixedAmnt = sessionTariffEntity2.getTariffValue();
 				}
 			}
 			entity.setDisconnectionSessionTariffEntities(disconnectionSessionTariffEntities);
 
+			if (request.isAppApplicable()) {
+				if (entity.getDisconnectionSessionTariffEntities() != null && entity.getDisconnectionSessionTariffEntities().size() > 0) {
+					applicationPay = entity.getDisconnectionSessionTariffEntities().get(0).getSessionTariffEntity().getAppAmnt();
+				}
+
+			} else if (entity.isDisconnectionApplicable()) {
+				if (entity.getDisconnectionSessionTariffEntities() != null && entity.getDisconnectionSessionTariffEntities().size() > 0) {
+					disconnectionPay = entity.getDisconnectionSessionTariffEntities().get(0).getSessionTariffEntity().getDisconnectionAmnt();
+				}
+			} else if (entity.isMeterRemovingApplicable()) {
+				if (entity.getDisconnectionSessionTariffEntities() != null && entity.getDisconnectionSessionTariffEntities().size() > 0) {
+					meterRemovingPay = entity.getDisconnectionSessionTariffEntities().get(0).getSessionTariffEntity().getMeterRemovingAmnt();
+				}
+			}
+			
 			Date dateOfCon = entity.getDateConnection();
 			Date dateOfDisCon = entity.getDateDisconnection();
 			Date dateOfLastBill = entity.getDateLastBill();
@@ -503,28 +528,42 @@ public class UserController {
 //				 }
 			} else {
 
-				totalFixedAmnt = entity.getDisconnectionSessionTariffEntities().get(0).getSessionTariffEntity()
-						.getTariffValue();
 				if (dateOfDisCon.getTime() > dateOfLastBill.getTime()) {
 					ruleDisc = "Last Bill Date To Disconnection Date + one month notice period";
 					long diffTime = dateOfDisCon.getTime() - dateOfLastBill.getTime();
 					diffTimeDay = (int) (diffTime / (24 * 60 * 60 * 1000));
 					noDays = (diffTimeDay + noticePeriod);
-					totalAmt = noDays * (totalFixedAmnt / 30) * entity.getLoadBal();
-					totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
-					if (entity.getSecurityAmnt() > 0) {
+					totalAmt = noDays * (totalFixedAmnt / 30) * request.getLoadBal();
+					//totalFinalPay = (totalAmt + request.getDuesAmnt()) - request.getSecurityAmnt();
+					if(applicationPay > 0 || disconnectionPay > 0 || meterRemovingPay>0) {
+						totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
+						totalFinalPay = totalFinalPay + applicationPay + disconnectionPay + meterRemovingPay;
+					}else {
+						totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
+					}
+					if (request.getSecurityAmnt() > 0) {
 						msg = "Note : after security adjustment";
 					} else {
 						msg = "Note : final payable amount against PLD";
 					}
 				} else if (dateOfLastBill.getTime() > dateOfDisCon.getTime()) {
 					ruleDisc = "Last Bill Date  to 30 - (last bill date - disconnection date) ";
-					long diffTime = dateOfLastBill.getTime() - dateOfDisCon.getTime();
+					Calendar call22 = Calendar.getInstance();
+					call22.setTime(dateOfDisCon);
+					call22.add(Calendar.DATE, +30);
+					
+					long diffTime =  call22.getTime().getTime() - dateOfLastBill.getTime();
 					diffTimeDay = (int) (diffTime / (24 * 60 * 60 * 1000));
-					noDays = (noticePeriod - diffTimeDay);
-					totalAmt = noDays * (totalFixedAmnt / 30) * entity.getLoadBal();
-					totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
-					if (entity.getSecurityAmnt() > 0) {
+					noDays = (diffTimeDay);
+					totalAmt = noDays * (totalFixedAmnt / 30) * request.getLoadBal();
+					//totalFinalPay = (totalAmt + request.getDuesAmnt()) - request.getSecurityAmnt();
+					if(applicationPay > 0 || disconnectionPay > 0 || meterRemovingPay>0) {
+						totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
+						totalFinalPay = totalFinalPay + applicationPay + disconnectionPay + meterRemovingPay;
+					}else {
+						totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
+					}
+					if (request.getSecurityAmnt() > 0) {
 						msg = "Note : after security adjustment";
 					} else {
 						msg = "Note : final payable amount against PLD";
@@ -536,7 +575,11 @@ public class UserController {
 			disconnectionRepository.save(entity);
 
 		} else {
+			
 			entity = new DisconnectionEntity();
+			entity.setAppApplicable(request.isAppApplicable());
+			entity.setDisconnectionApplicable(request.isDisconnectionApplicable());
+			entity.setMeterRemovingApplicable(request.isMeterRemovingApplicable());
 			entity.setCreatedDate(new Date());
 			entity.setTenantEntity(tenantEntity);
 			entity.setName(request.getName());
@@ -558,8 +601,25 @@ public class UserController {
 					totalFixedAmnt = sessionTariffEntity2.getTariffValue();
 				}
 			}
+			
+			
 			entity.setDisconnectionSessionTariffEntities(disconnectionSessionTariffEntities);
+			
+			if (request.isAppApplicable()) {
+				if (entity.getDisconnectionSessionTariffEntities() != null && entity.getDisconnectionSessionTariffEntities().size() > 0) {
+					applicationPay = entity.getDisconnectionSessionTariffEntities().get(0).getSessionTariffEntity().getAppAmnt();
+				}
 
+			} else if (entity.isDisconnectionApplicable()) {
+				if (entity.getDisconnectionSessionTariffEntities() != null && entity.getDisconnectionSessionTariffEntities().size() > 0) {
+					disconnectionPay = entity.getDisconnectionSessionTariffEntities().get(0).getSessionTariffEntity().getDisconnectionAmnt();
+				}
+			} else if (entity.isMeterRemovingApplicable()) {
+				if (entity.getDisconnectionSessionTariffEntities() != null && entity.getDisconnectionSessionTariffEntities().size() > 0) {
+					meterRemovingPay = entity.getDisconnectionSessionTariffEntities().get(0).getSessionTariffEntity().getMeterRemovingAmnt();
+				}
+			}
+			
 			Date dateOfCon = entity.getDateConnection();
 			Date dateOfDisCon = entity.getDateDisconnection();
 			Date dateOfLastBill = entity.getDateLastBill();
@@ -577,7 +637,14 @@ public class UserController {
 					diffTimeDay = (int) (diffTime / (24 * 60 * 60 * 1000));
 					noDays = (diffTimeDay + noticePeriod);
 					totalAmt = noDays * (totalFixedAmnt / 30) * entity.getLoadBal();
-					totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
+					
+					if(applicationPay > 0 || disconnectionPay > 0 || meterRemovingPay>0) {
+						totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
+						totalFinalPay = totalFinalPay + applicationPay + disconnectionPay + meterRemovingPay;
+					}else {
+						totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
+					}
+					//totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
 					if (entity.getSecurityAmnt() > 0) {
 						msg = "Note : after security adjustment";
 					} else {
@@ -585,11 +652,22 @@ public class UserController {
 					}
 				} else if (dateOfLastBill.getTime() > dateOfDisCon.getTime()) {
 					ruleDisc = "Last Bill Date  to 30 - (last bill date - disconnection date) ";
-					long diffTime = dateOfLastBill.getTime() - dateOfDisCon.getTime();
+					Calendar call22 = Calendar.getInstance();
+					call22.setTime(dateOfDisCon);
+					call22.add(Calendar.DATE, +30);
+					
+					long diffTime =  call22.getTime().getTime() - dateOfLastBill.getTime();
+					
 					diffTimeDay = (int) (diffTime / (24 * 60 * 60 * 1000));
-					noDays = (noticePeriod - diffTimeDay);
+					noDays = (diffTimeDay);
 					totalAmt = noDays * (totalFixedAmnt / 30) * entity.getLoadBal();
 					totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
+					if(applicationPay > 0 || disconnectionPay > 0 || meterRemovingPay>0) {
+						totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
+						totalFinalPay = totalFinalPay + applicationPay + disconnectionPay + meterRemovingPay;
+					}else {
+						totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
+					}
 					if (entity.getSecurityAmnt() > 0) {
 						msg = "Note : after security adjustment";
 					} else {
@@ -634,9 +712,15 @@ public class UserController {
 					sessionTariffModel.setSecurityAmt(str.getSecurityAmnt());
 					sessionTariffModel.setPayAmnt(Math.round(str.getPayAmnt()));
 					sessionTariffModel.setDuesAmnt(str.getDuesAmnt());
+					
+					sessionTariffModel.setAppApplicable(str.isAppApplicable());
+					sessionTariffModel.setMeterRemovingApplicable(str.isMeterRemovingApplicable());
+					sessionTariffModel.setDisconnectionApplicable(str.isDisconnectionApplicable());
+					
 					sessionTariffModel.setTenantCode(str.getTenantEntity().getTenantCode());
 					if (str.getDisconnectionSessionTariffEntities() != null) {
 						str.getDisconnectionSessionTariffEntities().forEach(se -> {
+							sessionTariffModel.setPhaseType(se.getSessionTariffEntity().getPhaseType());
 							sessions.add(se.getSessionTariffEntity().getSession());
 							sessionTariffModel.setTariffType(se.getSessionTariffEntity().getTariffType());
 							sessionTariffModel.setAppAmnt(se.getSessionTariffEntity().getAppAmnt() + "");
@@ -649,6 +733,7 @@ public class UserController {
 					}
 					sessionTariffModel.setTariffValue(fixedAmts + "");
 					sessionTariffModel.setSession(sessions);
+					
 					sessionTariffModels.add(sessionTariffModel);
 				}
 			});

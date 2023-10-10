@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +23,7 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import com.spdcl.entity.DisconnectionEntity;
 import com.spdcl.entity.DisconnectionSessionTariffEntity;
 import com.spdcl.entity.SessionTariffEntity;
+import com.spdcl.model.ApplicableTariffPDF;
 import com.spdcl.model.SessionTariffPDF;
 import com.spdcl.repository.DisconnectionRepository;
 import com.spdcl.repository.SessionTariffRepository;
@@ -38,10 +41,13 @@ public class DisconnectionService {
 	public InputStreamResource routeDownload(String tenantCode, UUID id)
 			throws FileNotFoundException, java.io.IOException {
 		Context context = new Context();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		Map<String, Object> map = new HashMap<String, Object>();
 		DisconnectionEntity disconnectionEntity = disconnectionRepository.findById(id).get();
 		List<SessionTariffPDF> listSession = new ArrayList<SessionTariffPDF>();
+		List<String> applicableTariffPDFStr = Arrays.asList("Meter Removing","Application","Disconnection"); 
+		List<ApplicableTariffPDF> applicableTariffPDFList = new ArrayList<ApplicableTariffPDF>();
+		List<ApplicableTariffPDF> applicableTariffPDFList1 = new ArrayList<ApplicableTariffPDF>();
 		Boolean breakBol = true;
 		double totalFixedAmnt = 0;
 		int noticePeriod = 30;
@@ -50,6 +56,9 @@ public class DisconnectionService {
 		int diffTimeDay = 0;
 		double totalAmt = 0;
 		double totalFinalPay = 0;
+		double applicationPay = 0;
+		double disconnectionPay = 0;
+		double meterRemovingPay = 0;
 		String msg = null;
 		if (disconnectionEntity != null && disconnectionEntity.getTenantEntity().getTenantCode().equals(tenantCode)) {
 			map.put("name", disconnectionEntity.getName());
@@ -64,6 +73,49 @@ public class DisconnectionService {
 					.getSessionTariffEntity().getPhaseType());
 			map.put("load", "(" + disconnectionEntity.getLoadBal() + "KB" + ")");
 			map.put("load1", disconnectionEntity.getLoadBal());
+			String checked = "<input type = 'checkbox' checked />";
+			String unchecked = "<input type = 'checkbox'/>";
+			for(String str : applicableTariffPDFStr) {
+				ApplicableTariffPDF applicableTariffPDF = new ApplicableTariffPDF();
+				ApplicableTariffPDF applicableTariffPDF1 = new ApplicableTariffPDF();
+				if (disconnectionEntity.isAppApplicable() && str.equalsIgnoreCase("Application")) {
+					applicableTariffPDF.setChecking(checked);
+					if(disconnectionEntity.getDisconnectionSessionTariffEntities() != null && disconnectionEntity.getDisconnectionSessionTariffEntities().size()>0) {
+						applicationPay = disconnectionEntity.getDisconnectionSessionTariffEntities().get(0).getSessionTariffEntity().getAppAmnt();
+						applicableTariffPDF1.setApplicableTariff(str);
+						applicableTariffPDF1.setChecking(applicationPay+"");
+						applicableTariffPDFList1.add(applicableTariffPDF1);
+					}
+					
+				} else if (!disconnectionEntity.isAppApplicable() && str.equalsIgnoreCase("Application")){
+					applicableTariffPDF.setChecking(unchecked);
+				}
+				else if (disconnectionEntity.isDisconnectionApplicable() && str.equalsIgnoreCase("Disconnection")) {
+					if(disconnectionEntity.getDisconnectionSessionTariffEntities() != null && disconnectionEntity.getDisconnectionSessionTariffEntities().size()>0) {
+						disconnectionPay = disconnectionEntity.getDisconnectionSessionTariffEntities().get(0).getSessionTariffEntity().getDisconnectionAmnt();
+						applicableTariffPDF1.setApplicableTariff(str);
+						applicableTariffPDF1.setChecking(disconnectionPay+"");
+						applicableTariffPDFList1.add(applicableTariffPDF1);
+					}
+					 applicableTariffPDF.setChecking(checked);
+				}else if (!disconnectionEntity.isDisconnectionApplicable() && str.equalsIgnoreCase("Disconnection")){
+					applicableTariffPDF.setChecking(unchecked);
+				}
+				 
+				else if (disconnectionEntity.isMeterRemovingApplicable() && str.equalsIgnoreCase("Meter Removing")) {
+					if(disconnectionEntity.getDisconnectionSessionTariffEntities() != null && disconnectionEntity.getDisconnectionSessionTariffEntities().size()>0) {
+						meterRemovingPay = disconnectionEntity.getDisconnectionSessionTariffEntities().get(0).getSessionTariffEntity().getMeterRemovingAmnt();
+						applicableTariffPDF1.setApplicableTariff(str);
+						applicableTariffPDF1.setChecking(meterRemovingPay+"");
+						applicableTariffPDFList1.add(applicableTariffPDF1);
+					}
+					 applicableTariffPDF.setChecking(checked);
+				}else if (!disconnectionEntity.isMeterRemovingApplicable() && str.equalsIgnoreCase("Meter Removing")){
+					applicableTariffPDF.setChecking(unchecked);
+				}
+				applicableTariffPDF.setApplicableTariff(str);
+				applicableTariffPDFList.add(applicableTariffPDF);
+			}
 			if (disconnectionEntity.getDisconnectionSessionTariffEntities() != null) {
 				for (DisconnectionSessionTariffEntity sessionTariffPDF : disconnectionEntity
 						.getDisconnectionSessionTariffEntities()) {
@@ -83,6 +135,7 @@ public class DisconnectionService {
 						if (!breakBol) {
 							SessionTariffPDF sessionTariffPDF2 = new SessionTariffPDF();
 							sessionTariffPDF2.setSession(sessionTariffPDF.getSessionTariffEntity().getSession());
+							
 							sessionTariffPDF2.setDiscAmnt("nil");
 							sessionTariffPDF2.setMeterAmnt("nil");
 							sessionTariffPDF2.setAppAmnt("nil");
@@ -111,6 +164,13 @@ public class DisconnectionService {
 					noDays = (diffTimeDay + noticePeriod);
 					totalAmt = noDays * (totalFixedAmnt / 30) * disconnectionEntity.getLoadBal();
 					totalFinalPay = (totalAmt + disconnectionEntity.getDuesAmnt()) - disconnectionEntity.getSecurityAmnt();
+					if(applicationPay > 0 || disconnectionPay > 0 || meterRemovingPay>0) {
+						totalFinalPay = (totalAmt + disconnectionEntity.getDuesAmnt()) - disconnectionEntity.getSecurityAmnt();	
+						
+					}else {
+						totalFinalPay = (totalAmt + disconnectionEntity.getDuesAmnt()) - disconnectionEntity.getSecurityAmnt();	
+					}
+					
 					if(disconnectionEntity.getSecurityAmnt()>0) {
 						msg = "Note : after security adjustment";
 					}else {
@@ -118,11 +178,23 @@ public class DisconnectionService {
 					}
 				}else if(dateOfLastBill.getTime() > dateOfDisCon.getTime()) {
 					ruleDisc = "Last Bill Date  to 30 - (last bill date - disconnection date) ";
-					long diffTime =  dateOfLastBill.getTime() - dateOfDisCon.getTime();
+	
+					Calendar call22 = Calendar.getInstance();
+					call22.setTime(dateOfDisCon);
+					call22.add(Calendar.DATE, +30);
+					
+					long diffTime =  call22.getTime().getTime() - dateOfLastBill.getTime();
 					diffTimeDay = (int) (diffTime / (24 * 60 * 60 * 1000));
-					noDays = (noticePeriod - diffTimeDay);
+					noDays = (diffTimeDay);
 					totalAmt = noDays * (totalFixedAmnt / 30) * disconnectionEntity.getLoadBal();
-					totalFinalPay = (totalAmt + disconnectionEntity.getDuesAmnt()) - disconnectionEntity.getSecurityAmnt();
+					if(applicationPay > 0 || disconnectionPay > 0 || meterRemovingPay > 0) {
+						totalFinalPay = (totalAmt + disconnectionEntity.getDuesAmnt()) - disconnectionEntity.getSecurityAmnt();	
+						
+					}else {
+						totalFinalPay = (totalAmt + disconnectionEntity.getDuesAmnt()) - disconnectionEntity.getSecurityAmnt();	
+						
+					}
+					
 					if(disconnectionEntity.getSecurityAmnt()>0) {
 						msg = "Note : after security adjustment";
 					}else {
@@ -135,10 +207,12 @@ public class DisconnectionService {
 			map.put("noticePeriod", noticePeriod);
 			map.put("diffTimeDay", diffTimeDay);
 			map.put("dues", disconnectionEntity.getDuesAmnt());
-			map.put("totalFinalPay", totalFinalPay);
+			map.put("totalFinalPay", Math.round(totalFinalPay));
 			map.put("noDays", noDays);
 			map.put("ruleDisc", ruleDisc);
 			map.put("listSession", listSession);
+			map.put("listApplicable", applicableTariffPDFList);
+			map.put("listApplicable1", applicableTariffPDFList1);
 			map.put("totalFixedAmnt", totalFixedAmnt + "");
 			map.put("totalMeterRemAmnt", listSession.get(0).getMeterAmnt());
 			map.put("totalAppAmnt", listSession.get(0).getAppAmnt());
