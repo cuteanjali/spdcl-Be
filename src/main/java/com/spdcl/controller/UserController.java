@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -16,6 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,6 +58,7 @@ import com.spdcl.model.AdminUserModel;
 import com.spdcl.model.AdminUserResponseModel;
 import com.spdcl.model.DisconnectionRequestData;
 import com.spdcl.model.ForgotRequestModel;
+import com.spdcl.model.PaginationRequestBean;
 import com.spdcl.model.Response;
 import com.spdcl.model.RoleModel;
 import com.spdcl.model.SessionTariffModel;
@@ -450,6 +458,8 @@ public class UserController {
 		Response response = new Response();
 		TenantEntity tenantEntity = tenantRepository.findByTenantCode(request.getTenantCode());
 		DisconnectionEntity entity = disconnectionRepository.findById(request.getId()).orElse(null);
+		List<DisconnectionEntity> entityConsumer = disconnectionRepository.findByConsumer(request.getConsumerNo());
+		DisconnectionEntity consumer = entityConsumer.size()>0?entityConsumer.get(0):null;
 		List<DisconnectionSessionTariffEntity> disconnectionSessionTariffEntities = new ArrayList<DisconnectionSessionTariffEntity>();
 		List<SessionTariffEntity> sessionTariffEntity = sessionTariffRepository
 				.findByTenantEntityAndTariffTypeAndPhaseTypeAndSessionIn(tenantEntity, request.getTariffType(),request.getPhaseType(),
@@ -469,9 +479,14 @@ public class UserController {
 		
 		if (request.getId() != null && entity != null) {
 
+			
+				
+			
 			entity.setModifiedDate(new Date());
 			entity.setTenantEntity(tenantEntity);
 			entity.setName(request.getName());
+			entity.setConsumerNo(request.getConsumerNo());
+			entity.setReadingNo(request.getReadingNo());
 			entity.setMeter(request.getMeter());
 			entity.setDateConnection(request.getDateConnection());
 			entity.setDateDisconnection(request.getDateDisconnection());
@@ -554,6 +569,9 @@ public class UserController {
 					
 					long diffTime =  call22.getTime().getTime() - dateOfLastBill.getTime();
 					diffTimeDay = (int) (diffTime / (24 * 60 * 60 * 1000));
+					if (diffTimeDay<=0) {
+						diffTimeDay = 0;
+					}
 					noDays = (diffTimeDay);
 					totalAmt = noDays * (totalFixedAmnt / 30) * request.getLoadBal();
 					//totalFinalPay = (totalAmt + request.getDuesAmnt()) - request.getSecurityAmnt();
@@ -573,9 +591,10 @@ public class UserController {
 			entity.setNoOfDays(noDays);
 			entity.setPayAmnt(totalFinalPay);
 			disconnectionRepository.save(entity);
-
+			response.setStatus(ServiceConstants.STATUS_SUCCESS);
+		
 		} else {
-			
+			if (consumer ==null) {
 			entity = new DisconnectionEntity();
 			entity.setAppApplicable(request.isAppApplicable());
 			entity.setDisconnectionApplicable(request.isDisconnectionApplicable());
@@ -583,6 +602,8 @@ public class UserController {
 			entity.setCreatedDate(new Date());
 			entity.setTenantEntity(tenantEntity);
 			entity.setName(request.getName());
+			entity.setConsumerNo(request.getConsumerNo());
+			entity.setReadingNo(request.getReadingNo());
 			entity.setMeter(request.getMeter());
 			entity.setSecurityAmnt(request.getSecurityAmnt());
 			entity.setDateConnection(request.getDateConnection());
@@ -659,6 +680,9 @@ public class UserController {
 					long diffTime =  call22.getTime().getTime() - dateOfLastBill.getTime();
 					
 					diffTimeDay = (int) (diffTime / (24 * 60 * 60 * 1000));
+					if (diffTimeDay<=0) {
+						diffTimeDay = 0;
+					}
 					noDays = (diffTimeDay);
 					totalAmt = noDays * (totalFixedAmnt / 30) * entity.getLoadBal();
 					totalFinalPay = (totalAmt + entity.getDuesAmnt()) - entity.getSecurityAmnt();
@@ -679,9 +703,13 @@ public class UserController {
 			entity.setNoOfDays(noDays);
 			entity.setPayAmnt(totalAmt);
 			disconnectionRepository.save(entity);
-
+			response.setStatus(ServiceConstants.STATUS_SUCCESS);
+			}else {
+				response.setStatus(ServiceConstants.STATUS_FAILED_FOR_USED);
+				response.setMessage("Consumer Number already Exist!");
+			}
 		}
-		response.setStatus(ServiceConstants.STATUS_SUCCESS);
+		
 		return response;
 	}
 
@@ -690,7 +718,6 @@ public class UserController {
 	public Response getAllDisconnection(@PathVariable String tenantCode) {
 		Response response = new Response();
 		TenantEntity tenantEntity1 = tenantRepository.findByTenantCode(tenantCode);
-		List<SessionTariffEntity> tenantEntity2 = sessionTariffRepository.findByTenantEntity(tenantEntity1);
 		List<DisconnectionEntity> disconnectionEntities = disconnectionRepository.findAll();
 		List<DisconnectionRequestData> sessionTariffModels = new ArrayList<DisconnectionRequestData>();
 
@@ -704,6 +731,8 @@ public class UserController {
 					sessionTariffModel.setName(str.getName());
 					sessionTariffModel.setId(str.getId());
 					sessionTariffModel.setMeter(str.getMeter());
+					sessionTariffModel.setConsumerNo(str.getConsumerNo());
+					sessionTariffModel.setReadingNo(str.getReadingNo());
 					sessionTariffModel.setDateConnection(str.getDateConnection());
 					sessionTariffModel.setDateDisconnection(str.getDateDisconnection());
 					sessionTariffModel.setDateLastBill(str.getDateLastBill());
@@ -712,7 +741,7 @@ public class UserController {
 					sessionTariffModel.setSecurityAmt(str.getSecurityAmnt());
 					sessionTariffModel.setPayAmnt(Math.round(str.getPayAmnt()));
 					sessionTariffModel.setDuesAmnt(str.getDuesAmnt());
-					
+					sessionTariffModel.setCreatedDate(str.getCreatedDate());
 					sessionTariffModel.setAppApplicable(str.isAppApplicable());
 					sessionTariffModel.setMeterRemovingApplicable(str.isMeterRemovingApplicable());
 					sessionTariffModel.setDisconnectionApplicable(str.isDisconnectionApplicable());
@@ -738,11 +767,79 @@ public class UserController {
 				}
 			});
 		}
+		Collections.sort(sessionTariffModels, Comparator.comparing(DisconnectionRequestData::getCreatedDate).reversed()); 
 		response.setData(sessionTariffModels);
 		response.setStatus(ServiceConstants.STATUS_SUCCESS);
 		return response;
 	}
 
+	@ApiOperation(value = "get all Disconnection for application", response = Response.class)
+	@PostMapping(path = "/getAllDisconnectionPagination/{tenantCode}")
+	public Response getAllDisconnectionPagination(@RequestBody PaginationRequestBean paginationRequestBean,@PathVariable String tenantCode) {
+		Response response = new Response();
+		TenantEntity tenantEntity1 = tenantRepository.findByTenantCode(tenantCode);
+		Page<DisconnectionEntity> disconnectionEntities = null;
+		List<DisconnectionRequestData> sessionTariffModels = new ArrayList<DisconnectionRequestData>();
+		Sort sort = paginationRequestBean.getSortDir().equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(paginationRequestBean.getSortBy()).ascending()
+				: Sort.by(paginationRequestBean.getSortBy()).descending();
+		Pageable pageable = PageRequest.of(paginationRequestBean.getPageNo(), paginationRequestBean.getPageSize(), sort);
+		if (paginationRequestBean.getSearchText() != null && !paginationRequestBean.getSearchText().isEmpty()) {
+			disconnectionEntities = disconnectionRepository.fullTextSearch(paginationRequestBean.getSearchText(),pageable);
+		} else {
+			disconnectionEntities = disconnectionRepository.findAll(pageable);
+		}
+		if (disconnectionEntities != null) {
+			disconnectionEntities.forEach(str -> {
+				List<String> sessions = new ArrayList<String>();
+				List<String> fixedAmts = new ArrayList<String>();
+				if (str.getTenantEntity().getTenantCode().equals(tenantEntity1.getTenantCode())) {
+
+					DisconnectionRequestData sessionTariffModel = new DisconnectionRequestData();
+					sessionTariffModel.setName(str.getName());
+					sessionTariffModel.setId(str.getId());
+					sessionTariffModel.setMeter(str.getMeter());
+					sessionTariffModel.setConsumerNo(str.getConsumerNo());
+					sessionTariffModel.setReadingNo(str.getReadingNo());
+					sessionTariffModel.setDateConnection(str.getDateConnection());
+					sessionTariffModel.setDateDisconnection(str.getDateDisconnection());
+					sessionTariffModel.setDateLastBill(str.getDateLastBill());
+					sessionTariffModel.setLoadBal(str.getLoadBal());
+					sessionTariffModel.setNoOfDays(str.getNoOfDays());
+					sessionTariffModel.setSecurityAmt(str.getSecurityAmnt());
+					sessionTariffModel.setPayAmnt(Math.round(str.getPayAmnt()));
+					sessionTariffModel.setDuesAmnt(str.getDuesAmnt());
+					sessionTariffModel.setCreatedDate(str.getCreatedDate());
+					sessionTariffModel.setAppApplicable(str.isAppApplicable());
+					sessionTariffModel.setMeterRemovingApplicable(str.isMeterRemovingApplicable());
+					sessionTariffModel.setDisconnectionApplicable(str.isDisconnectionApplicable());
+					
+					sessionTariffModel.setTenantCode(str.getTenantEntity().getTenantCode());
+					if (str.getDisconnectionSessionTariffEntities() != null) {
+						str.getDisconnectionSessionTariffEntities().forEach(se -> {
+							sessionTariffModel.setPhaseType(se.getSessionTariffEntity().getPhaseType());
+							sessions.add(se.getSessionTariffEntity().getSession());
+							sessionTariffModel.setTariffType(se.getSessionTariffEntity().getTariffType());
+							sessionTariffModel.setAppAmnt(se.getSessionTariffEntity().getAppAmnt() + "");
+							sessionTariffModel
+									.setMeterRemovingAmnt(se.getSessionTariffEntity().getMeterRemovingAmnt() + "");
+							sessionTariffModel
+									.setDisconnectionAmnt(se.getSessionTariffEntity().getDisconnectionAmnt() + "");
+							fixedAmts.add(se.getSessionTariffEntity().getTariffValue() + "");
+						});
+					}
+					sessionTariffModel.setTariffValue(fixedAmts + "");
+					sessionTariffModel.setSession(sessions);
+					
+					sessionTariffModels.add(sessionTariffModel);
+				}
+			});
+		}
+		//Collections.sort(sessionTariffModels, Comparator.comparing(DisconnectionRequestData::getCreatedDate).reversed()); 
+		response.setData(sessionTariffModels);
+		response.setStatus(ServiceConstants.STATUS_SUCCESS);
+		return response;
+	}
+	
 	@ApiOperation(value = "get all Disconnection for application", response = Response.class)
 	@GetMapping(path = "/getSearchDisconnection/{tenantCode}/{key}")
 	public Response getSearchDisconnection(@PathVariable String tenantCode, @PathVariable String key) {
@@ -763,6 +860,11 @@ public class UserController {
 					sessionTariffModel.setName(str.getName());
 					sessionTariffModel.setId(str.getId());
 					sessionTariffModel.setMeter(str.getMeter());
+					sessionTariffModel.setConsumerNo(str.getConsumerNo());
+					sessionTariffModel.setReadingNo(str.getReadingNo());
+					sessionTariffModel.setAppApplicable(str.isAppApplicable());
+					sessionTariffModel.setMeterRemovingApplicable(str.isMeterRemovingApplicable());
+					sessionTariffModel.setDisconnectionApplicable(str.isDisconnectionApplicable());
 					sessionTariffModel.setDateConnection(str.getDateConnection());
 					sessionTariffModel.setDateDisconnection(str.getDateDisconnection());
 					sessionTariffModel.setDateLastBill(str.getDateLastBill());
@@ -774,6 +876,7 @@ public class UserController {
 					sessionTariffModel.setTenantCode(str.getTenantEntity().getTenantCode());
 					if (str.getDisconnectionSessionTariffEntities() != null) {
 						str.getDisconnectionSessionTariffEntities().forEach(se -> {
+							sessionTariffModel.setPhaseType(se.getSessionTariffEntity().getPhaseType());
 							sessions.add(se.getSessionTariffEntity().getSession());
 							sessionTariffModel.setTariffType(se.getSessionTariffEntity().getTariffType());
 							sessionTariffModel.setAppAmnt(se.getSessionTariffEntity().getAppAmnt() + "");
@@ -828,6 +931,33 @@ public class UserController {
 		} else {
 			return new ResponseEntity(HttpStatus.SERVICE_UNAVAILABLE);
 		}
+	}
+	
+	@ApiOperation(value = "get Disconnection for application", response = Response.class)
+	@GetMapping(path = "/getDisconnectionById/{tenantCode}/{id}")
+	public Response getDisconnectionById(@PathVariable String tenantCode, @PathVariable UUID id) {
+		Response response = new Response();
+		DisconnectionEntity disconnectionEntity = disconnectionRepository.findById(id).get();
+		if (disconnectionEntity != null && disconnectionEntity.getTenantEntity().getTenantCode().equals(tenantCode)) {
+			DisconnectionRequestData authRequest = new DisconnectionRequestData();
+			authRequest.setName(disconnectionEntity.getName());
+			authRequest.setConsumerNo(disconnectionEntity.getConsumerNo());
+			response.setData(authRequest);
+			response.setStatus(ServiceConstants.STATUS_SUCCESS);
+		}
+		return response;
+	}
+	
+	@ApiOperation(value = "get Disconnection for application", response = Response.class)
+	@GetMapping(path = "/viewDisconnectionById/{tenantCode}/{id}")
+	public Response viewDisconnectionById(@PathVariable String tenantCode, @PathVariable UUID id) {
+		Response response = new Response();
+		Map<String, Object> disconnectionEntity = disconnectionService.viewDisconnection(tenantCode,id);
+		if (disconnectionEntity != null) {
+			response.setData(disconnectionEntity);
+			response.setStatus(ServiceConstants.STATUS_SUCCESS);
+		}
+		return response;
 	}
 	
 	@ApiOperation(value = "User forgot pass for application", response = Response.class)

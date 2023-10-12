@@ -30,7 +30,28 @@ public class DisconnectionRequestData {
 	private boolean meterRemovingApplicable;
 	private boolean appApplicable;
 	
+	private String consumerNo;
+	private String readingNo;
+	private Date createdDate;
 	
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+	public String getConsumerNo() {
+		return consumerNo;
+	}
+	public void setConsumerNo(String consumerNo) {
+		this.consumerNo = consumerNo;
+	}
+	public String getReadingNo() {
+		return readingNo;
+	}
+	public void setReadingNo(String readingNo) {
+		this.readingNo = readingNo;
+	}
 	public boolean isDisconnectionApplicable() {
 		return disconnectionApplicable;
 	}

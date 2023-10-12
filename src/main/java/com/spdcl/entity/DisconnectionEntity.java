@@ -41,7 +41,26 @@ public class DisconnectionEntity  extends BaseEntity{
 	private boolean meterRemovingApplicable;
 	private boolean appApplicable;
 	
+	private String consumer;
+	private String reading;
 	
+	
+	public String getConsumerNo() {
+		return consumer;
+	}
+
+	public void setConsumerNo(String consumerNo) {
+		this.consumer = consumerNo;
+	}
+
+	public String getReadingNo() {
+		return reading;
+	}
+
+	public void setReadingNo(String readingNo) {
+		this.reading = readingNo;
+	}
+
 	public boolean isDisconnectionApplicable() {
 		return disconnectionApplicable;
 	}

@@ -26,7 +26,21 @@ public class DisconnectionRequest {
 	private boolean meterRemovingApplicable;
 	private boolean appApplicable;
 	
+	private String consumerNo;
+	private String readingNo;
 	
+	public String getConsumerNo() {
+		return consumerNo;
+	}
+	public void setConsumerNo(String consumerNo) {
+		this.consumerNo = consumerNo;
+	}
+	public String getReadingNo() {
+		return readingNo;
+	}
+	public void setReadingNo(String readingNo) {
+		this.readingNo = readingNo;
+	}
 	public boolean isDisconnectionApplicable() {
 		return disconnectionApplicable;
 	}

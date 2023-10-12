@@ -160,6 +160,14 @@ table, tbody {
 	</p>
 	<table border="0" cellspacing="0" cellpadding="0" style="width: 100%">
 		<tr>
+		<td>Consumer No. : <span
+				style="padding-top: 0pt; padding-left: 9pt; text-indent: 0pt; text-align: left; font-weight: bold;">[(${consumer})]</span>
+			</td>
+		<td style="text-align: right;">Meter Reading : <span
+				style="padding-top: 0pt; padding-left: 9pt; text-indent: 0pt; text-align: left; font-weight: bold;">[(${reading})]</span>
+			</td>
+			</tr>
+			<tr>
 			<td>Consumer Name : <span
 				style="padding-top: 0pt; padding-left: 9pt; text-indent: 0pt; text-align: left; font-weight: normal;">[(${name})]</span>
 			</td>
@@ -265,7 +273,14 @@ table, tbody {
 							
 						</tr>
 							<tr data-iterate="item" th:each="item, iterator : ${listApplicable}">
-					        <td style="text-align: center;">[(${item.applicableTariff})]</td> 
+							
+					        <td style="text-align: left;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					        [(${item.applicableTariff})]</td> 
 					     
 							<td style="text-align: center;">[(${item.checking})]</td>			
 								 							
@@ -294,12 +309,12 @@ table, tbody {
 		Total Fixed Charge = [(${totalAmt})] Rs.</p>
 
 	<p style="text-indent: 1pt; text-align: left; font-size: 17px">
-		<u>Dues Amount = [(${dues})] (Rs.)</u>
+			
 	</p>
 	<p style="text-indent: 1pt; text-align: left; font-size: 17px">
 		Total Final Payable Amount = [(${totalFinalPay})] Rs <span
 			style="font-weight: bold;">
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([(${msg})].)</span>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([(${msg})])</span>
 	</p>
 	<p style="text-indent: 1pt; text-align: left; font-size: 17px">
 		<u>Other Charge</u>
